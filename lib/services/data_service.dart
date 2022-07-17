@@ -31,7 +31,7 @@ Future<List<User>> getUsers() async {
     throw 'USER NOT LOGGED IN';
   }
 
-  String encoded = accessToken.applicationId;
+  String encoded = await cryptoUtils.encode(accessToken.applicationId);
 
 /*
   var response = await client.get(Uri.parse(apiUrl + '/users/'),

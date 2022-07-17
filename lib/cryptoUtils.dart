@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:ephemeral/services/data_service.dart';
+import 'package:flutter/cupertino.dart';
 
 class CryptoUtils {
 
@@ -15,7 +16,11 @@ class CryptoUtils {
     }
   }
 
+  /**
+   * encode a bigint like String
+   */
   Future<String> encode(String raw) async {
+    print(raw);
     var value = await loadAsset();
 
     var config = jsonDecode(value);
@@ -50,10 +55,9 @@ class CryptoUtils {
       int rune = encodedRawId.runes.elementAt(i);
       String char = new String.fromCharCode(rune);
       int pos = alphabets.indexOf(char);
-      int elevatedPos = pos + total;
-      if(elevatedPos >= alphabets.length) {
-        elevatedPos = alphabets.length - elevatedPos;
-        elevatedPos = elevatedPos.abs();
+      int elevatedPos = (pos + total) - alphabets.length;
+      if(elevatedPos < 0) {
+        elevatedPos = alphabets.length + elevatedPos;
       }
       String elevatedChar = alphabets[elevatedPos];
       rawIdNewVals[i] = elevatedChar.codeUnitAt(0);
@@ -65,8 +69,59 @@ class CryptoUtils {
       output += new String.fromCharCode(element);
     }
 
-    print(output);
     return output;
+  }
+
+  Future<String> decode(String encoded) async {
+    var value = await loadAsset();
+
+    var config = jsonDecode(value);
+    var key = config["appKey"];
+
+    // encode the key to base64
+    Codec<String, String> stringToBase64 = utf8.fuse(base64);
+    String encodedKey = stringToBase64.encode(key);
+
+    // extract every numbers from the encoded key and add it
+    int total = 0;
+    encodedKey.runes.forEach((int rune) {
+      String char = new String.fromCharCode(rune);
+      int? nb = int.tryParse(char);
+      if(nb != null) {
+        total += nb;
+      }
+    });
+
+    print(encoded);
+
+    List<int> rawIdNewVals = encoded.runes.toList();
+
+    // decrease every 4 values from encodedRaw by the sum in desc order
+    for(int i = 0; i < encoded.runes.length; i+=4) {
+      int rune = encoded.runes.elementAt(i);
+      String char = new String.fromCharCode(rune);
+      int pos = alphabets.indexOf(char);
+      int gap = alphabets.length - pos;
+      int loweredPos = gap - total;
+      if(loweredPos < 0) {
+        loweredPos = loweredPos.abs();
+      } else {
+        loweredPos = alphabets.length - loweredPos;
+      }
+      String elevatedChar = alphabets[loweredPos];
+      rawIdNewVals[i] = elevatedChar.codeUnitAt(0);
+    }
+
+    String encodedRawId = "";
+
+    for (var element in rawIdNewVals) {
+      encodedRawId += new String.fromCharCode(element);
+    }
+
+    String elevated = stringToBase64.decode(encodedRawId.toString());
+    num raw = num.parse(elevated) / 4;
+
+    return raw.toStringAsFixed(0);
   }
 
 }
