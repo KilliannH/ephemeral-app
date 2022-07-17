@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Ephemeral</string>
-    <string name="facebook_app_id">11111111</string>
-    <string name="fb_login_protocol_scheme">fb1111111</string>
+    <string name="app_name_example">Ephemeral</string>
+    <string name="facebook_app_id_example">11111111</string>
+    <string name="fb_login_protocol_scheme_example">fb1111111</string>
     <!-- facebook_app_id:a long id, fb_login_protocol_scheme:fb + facebook_app_id-->
     <!-- src: https://learnflutterwithme.com/facebook-login-->
+    <!-- remove _example for production use -->
 </resources>

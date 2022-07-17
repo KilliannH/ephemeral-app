@@ -1,3 +1,4 @@
+import 'package:ephemeral/services/data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
@@ -35,6 +36,10 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+  void _doGetUsers() async {
+    await getUsers();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +64,14 @@ class _LoginPageState extends State<LoginPage> {
               _doLogout();
               },
             child: Text('Logout'),
-          )
+          ),
+            ElevatedButton(
+              style: raisedButtonStyle,
+              onPressed: () {
+                _doGetUsers();
+              },
+              child: Text('getUsers'),
+            )
           ],
         ),
       ),

@@ -31,12 +31,12 @@ void fbLogout() async {
   await FacebookAuth.i.logOut();
 }
 
-Future<bool> checkLoggedIn() async {
+Future<AccessToken?> checkLoggedIn() async {
   final AccessToken? accessToken = await FacebookAuth.instance.accessToken;
 // or FacebookAuth.i.accessToken
   if (accessToken != null) {
     // user is logged
-    return true;
+    return accessToken;
   }
-  return false;
+  return null;
 }

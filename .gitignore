@@ -1,4 +1,5 @@
 strings.xml
+assets/config.json
 # Miscellaneous
 *.class
 *.log
